@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Gráfico de Consultas por Dia</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Gráfico de Consultas por Dia</h1>
+
+    <!-- Formulário para selecionar o intervalo de datas -->
+    <form method="get">
+        <label for="inicio">Data Início:</label>
+        <input type="date" id="inicio" name="inicio" value="{{ request.GET.inicio }}">
+        <label for="fim">Data Fim:</label>
+        <input type="date" id="fim" name="fim" value="{{ request.GET.fim }}">
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <!-- Div para o gráfico -->
+    <div id="grafico" style="width: 100%; height: 400px;"></div>
+
+    <script>
+        // Recebe os dados das variáveis 'labels' e 'valores' do Django
+        var labels = {{ labels|safe }};
+        var valores = {{ valores|safe }};
+
+        // Configura o gráfico de linha
+        var trace = {
+            x: labels,
+            y: valores,
+            type: 'scatter',
+            mode: 'lines+markers',
+            line: { color: 'blue' },
+            marker: { size: 6 }
+        };
+
+        var layout = {
+            title: 'Quantidade de Consultas por Dia',
+            xaxis: { title: 'Data' },
+            yaxis: { title: 'Consultas' }
+        };
+
+        // Renderiza o gráfico usando Plotly
+        Plotly.newPlot('grafico', [trace], layout);
+    </script>
+</body>
+</html>

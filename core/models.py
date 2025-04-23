@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Ambulatorio(models.Model):
     nome = models.CharField(max_length=200)
     numleitos = models.IntegerField()
@@ -21,7 +22,10 @@ class Paciente(models.Model):
     telefone = models.CharField(max_length=15, null=True, blank=True)
     cidade = models.CharField(max_length=100)
     idade = models.IntegerField()
-    ambulatorio = models.ForeignKey(Ambulatorio, on_delete=models.CASCADE, related_name='pacientes')
+    ambulatorio = models.ForeignKey(
+        Ambulatorio, on_delete=models.CASCADE,
+        db_column='idamb', related_name='pacientes'
+    )
 
     class Meta:
         db_table = 'paciente'
@@ -41,7 +45,10 @@ class Medico(models.Model):
     telefone = models.CharField(max_length=15, null=True, blank=True)
     idade = models.IntegerField()
     salario = models.DecimalField(max_digits=12, decimal_places=2)
-    ambulatorio = models.ForeignKey(Ambulatorio, on_delete=models.CASCADE, related_name='medicos')
+    ambulatorio = models.ForeignKey(
+        Ambulatorio, on_delete=models.CASCADE,
+        db_column='idamb', related_name='medicos'
+    )
 
     class Meta:
         db_table = 'medico'
@@ -70,9 +77,9 @@ class Convenio(models.Model):
 class Consulta(models.Model):
     data = models.DateField()
     horario = models.TimeField()
-    medico = models.ForeignKey(Medico, on_delete=models.CASCADE)
-    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
-    convenio = models.ForeignKey(Convenio, on_delete=models.CASCADE)
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, db_column='medico')
+    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, db_column='paciente')
+    convenio = models.ForeignKey(Convenio, on_delete=models.CASCADE, db_column='convenio')
     porcent = models.DecimalField(max_digits=5, decimal_places=2)
 
     class Meta:
@@ -86,32 +93,32 @@ class Consulta(models.Model):
 
 
 class Atende(models.Model):
-    medico = models.ForeignKey(Medico, on_delete=models.CASCADE)
-    convenio = models.ForeignKey(Convenio, on_delete=models.CASCADE)
+    medico = models.ForeignKey(Medico, on_delete=models.CASCADE, db_column='medico', primary_key=True)
+    convenio = models.ForeignKey(Convenio, on_delete=models.CASCADE, db_column='convenio')
 
     class Meta:
         db_table = 'atende'
-        unique_together = ('medico', 'convenio')
         managed = False
+        unique_together = (('medico', 'convenio'),)
         verbose_name = 'Atende'
         verbose_name_plural = 'Atende'
 
     def __str__(self):
-        return f"{self.medico.nome} atende o convenio {self.convenio.nome}"
+        return f"{self.medico.nome} atende o convênio {self.convenio.nome}"
 
 
 class Possui(models.Model):
-    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
-    convenio = models.ForeignKey(Convenio, on_delete=models.CASCADE)
+    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, db_column='paciente',  primary_key=True)
+    convenio = models.ForeignKey(Convenio, on_delete=models.CASCADE, db_column='convenio')
     tipo = models.CharField(max_length=1)
     vencimento = models.DateField()
 
     class Meta:
         db_table = 'possui'
-        unique_together = ('paciente', 'convenio')
         managed = False
+        unique_together = (('paciente', 'convenio'),)
         verbose_name = 'Possui'
         verbose_name_plural = 'Possui'
 
     def __str__(self):
-        return f"{self.paciente.nome} possui o convênio {self.convenio.nome}"
+        return f"{self.paciente.nome} possui o convênio {self.convenio.nome} - tipo {self.tipo}"

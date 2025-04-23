@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Clínica</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Dashboard - Clínica</h1>
+
+        <!-- Gráfico de Consultas por Médico -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Consultas por Médico</h3>
+            </div>
+            <div class="card-body">
+                <div id="grafico-consultas-medico"></div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Convênios -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Consultas por Convênio</h3>
+            </div>
+            <div class="card-body">
+                <div id="grafico-convenios-pizza"></div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Consultas por Dia -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h3>Consultas por Dia</h3>
+            </div>
+            <div class="card-body">
+                <div id="grafico-consultas-dia"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados do gráfico de Consultas por Médico
+        var traceConsultasMedico = {
+            x: {{ dados_consultas_por_medico_labels|safe }},
+            y: {{ dados_consultas_por_medico_values|safe }},
+            type: 'bar',
+            marker: { color: 'rgb(255, 99, 132)' }
+        };
+        var layoutConsultasMedico = {
+            title: 'Número de Consultas por Médico',
+            xaxis: { title: 'Médico' },
+            yaxis: { title: 'Número de Consultas' }
+        };
+        Plotly.newPlot('grafico-consultas-medico', [traceConsultasMedico], layoutConsultasMedico);
+
+        // Dados do gráfico de Consultas por Convênio
+        var traceConveniosPizza = {
+            labels: {{ dados_convenios_pizza_labels|safe }},
+            values: {{ dados_convenios_pizza_values|safe }},
+            type: 'pie',
+            textinfo: 'label+percent',
+            marker: { colors: ['#66b3ff', '#99ff99', '#ffb3e6'] }
+        };
+        var layoutConveniosPizza = {
+            title: 'Distribuição de Consultas por Convênio'
+        };
+        Plotly.newPlot('grafico-convenios-pizza', [traceConveniosPizza], layoutConveniosPizza);
+
+        // Dados do gráfico de Consultas por Dia
+        var traceConsultasDia = {
+            x: {{ labels|safe }},
+            y: {{ valores|safe }},
+            type: 'scatter',
+            mode: 'lines+markers',
+            line: { color: 'blue' },
+            marker: { size: 6 }
+        };
+        var layoutConsultasDia = {
+            title: 'Consultas por Dia',
+            xaxis: { title: 'Data' },
+            yaxis: { title: 'Número de Consultas' }
+        };
+        Plotly.newPlot('grafico-consultas-dia', [traceConsultasDia], layoutConsultasDia);
+    </script>
+</body>
+</html>

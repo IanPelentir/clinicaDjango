@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório: Médicos por Especialidade</title>
+</head>
+<body>
+    <h1>Relatório: Médicos por Especialidade</h1>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Especialidade</th>
+        <th>Total de Médicos</th>
+    </tr>
+    </thead>
+        <tbody>
+    {% for item in dados %}
+        <tr>
+            <td>{{ item.especialidade }}</td>
+            <td>{{ item.total }}</td>
+        </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório: Consultas por Convênio</title>
+</head>
+<body>
+    <h1>Relatório: Consultas por Convênio</h1>
+    <form method="get">
+        <label>Data Início:
+        <input type="date" name="inicio" value="{{ data_inicio }}">
+        </label>
+        <label>Data Fim:
+        <input type="date" name="fim" value="{{ data_fim }}">
+        </label>
+        <button type="submit">Filtrar</button>
+    </form>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Convênio</th>
+            <th>Total de Consultas</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in dados %}
+        <tr>
+            <td>{{ item.convenio__nome }}</td>
+            <td>{{ item.total }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">Nenhuma consulta encontrada no período.</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

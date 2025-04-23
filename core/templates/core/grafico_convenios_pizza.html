@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Gráfico de Pizza - Convênios</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+        }
+        .grafico-container {
+            width: 60%;
+            margin: auto;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        canvas {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="grafico-container">
+        <h1>Distribuição de Consultas por Convênio</h1>
+        <canvas id="graficoPizza"></canvas>
+    </div>
+
+    <script>
+        const labels = {{ labels|safe }};
+        const dataValores = {{ valores|safe }};
+        const total = dataValores.reduce((a, b) => a + b, 0);
+
+        const ctx = document.getElementById('graficoPizza');
+        const grafico = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: dataValores,
+                    backgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#8BC34A', '#FF9800', '#9C27B0'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    datalabels: {
+                        formatter: (value) => {
+                            let percent = (value / total * 100).toFixed(1);
+                            return `${percent}%`;
+                        },
+                        color: '#fff',
+                        font: {
+                            weight: 'bold',
+                            size: 14
+                        }
+                    },
+                    legend: {
+                        position: 'right'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let value = context.raw;
+                                let percent = (value / total * 100).toFixed(1);
+                                return `${context.label}: ${value} (${percent}%)`;
+                            }
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+    </script>
+</body>
+</html>

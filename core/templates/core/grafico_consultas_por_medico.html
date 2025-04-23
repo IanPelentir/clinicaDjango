@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Gráfico de Consultas por Médico</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+</head>
+<body>
+    <h1>Consultas por Médico</h1>
+    <canvas id="graficoConsultas" width="800" height="400"></canvas>
+
+    <script>
+        const ctx = document.getElementById('graficoConsultas');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ nomes|safe }},
+                datasets: [{
+                    label: 'Consultas',
+                    data: {{ totais|safe }},
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        formatter: function(value, context) {
+                            const porcentagens = {{ percentuais|safe }};
+                            return `${value} (${porcentagens[context.dataIndex]}%)`;
+                        },
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Número de Consultas'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Médico'
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+    </script>
+</body>
+</html>
